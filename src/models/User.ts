@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, Document } from 'mongoose';
 
 interface User extends Document {
   username: string;
@@ -45,4 +45,6 @@ userSchema.virtual('friendCount').get(function () {
   return this.friends.length;
 });
 
-export const User = model('User', userSchema);
+const User = model('User', userSchema);
+
+export default User;
