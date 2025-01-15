@@ -1,6 +1,13 @@
 import { Schema, model } from 'mongoose';
 
-const userSchema = new Schema(
+interface User extends Document {
+  username: string;
+  email: string;
+  thoughts: string[];
+  friends: string[];
+}
+
+const userSchema = new Schema<User>(
   {
     username: {
       type: String,
