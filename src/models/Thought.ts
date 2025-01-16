@@ -1,15 +1,24 @@
-import mongoose, { Schema, model } from 'mongoose';
+import mongoose, { Schema, model, Types } from 'mongoose';
 import { formatTimestamp } from '../utils/formatTimestamp';
 
+// Interface for Reaction
+interface Reaction {
+  reactionId: Types.ObjectId;
+  reactionBody: string;
+  username: string;
+  createdAt: Date;
+}
+
+// Interface for Thought
 interface Thought {
-  thoughtText: string,
-  createdAt: Date,
-  username: string,
-  reactions: Schema.Types.ObjectId[]
+  thoughtText: string;
+  createdAt: Date;
+  username: string;
+  reactions: Reaction[];
 }
 
 // Reaction Schema
-const reactionSchema = new Schema(
+const reactionSchema = new Schema<Reaction>(
   {
     reactionId: {
       type: Schema.Types.ObjectId,
@@ -27,8 +36,8 @@ const reactionSchema = new Schema(
     createdAt: {
       type: Date,
       default: Date.now,
-      get: (createdAt: Date) => formatTimestamp(createdAt),
-    },
+      get: (value: Date) => formatTimestamp(value),
+    } as any, // Workaround for TypeScript error
   },
   {
     toJSON: { getters: true },
@@ -37,7 +46,7 @@ const reactionSchema = new Schema(
 );
 
 // Thought Schema
-const thoughtSchema = new Schema(
+const thoughtSchema = new Schema<Thought>(
   {
     thoughtText: {
       type: String,
@@ -48,8 +57,8 @@ const thoughtSchema = new Schema(
     createdAt: {
       type: Date,
       default: Date.now,
-      get: (createdAt: Date) => formatTimestamp(createdAt),
-    },
+      get: (value: Date) => formatTimestamp(value),
+    } as any, // Workaround for TypeScript error
     username: {
       type: String,
       required: true,
@@ -63,11 +72,11 @@ const thoughtSchema = new Schema(
 );
 
 // Virtual for reaction count
-thoughtSchema.virtual('reactionCount').get(function () {
+thoughtSchema.virtual('reactionCount').get(function (this: { reactions: Reaction[] }) {
   return this.reactions.length;
 });
 
 // Create the Thought model
-const Thought = model('Thought', thoughtSchema);
+const Thought = model<Thought>('Thought', thoughtSchema);
 
 export default Thought;
