@@ -1,6 +1,13 @@
 import mongoose, { Schema, model } from 'mongoose';
 import { formatTimestamp } from '../utils/formatTimestamp';
 
+interface Thought {
+  thoughtText: string,
+  createdAt: Date,
+  username: string,
+  reactions: Schema.Types.ObjectId[]
+}
+
 // Reaction Schema
 const reactionSchema = new Schema(
   {
