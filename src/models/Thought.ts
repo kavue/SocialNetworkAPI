@@ -1,5 +1,5 @@
 import mongoose, { Schema, model, Types } from 'mongoose';
-import { formatTimestamp } from '../utils/formatTimestamp';
+import { formatTimestamp } from '../utils/formatTimestamp.js';
 
 // Interface for Reaction
 interface Reaction {
@@ -37,7 +37,7 @@ const reactionSchema = new Schema<Reaction>(
       type: Date,
       default: Date.now,
       get: (value: Date) => formatTimestamp(value),
-    } as any, // Workaround for TypeScript error
+    } as any, 
   },
   {
     toJSON: { getters: true },
