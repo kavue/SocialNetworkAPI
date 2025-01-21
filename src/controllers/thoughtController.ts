@@ -19,36 +19,32 @@ export const getThoughtById = async (req: Request, res: Response): Promise<void>
         res.status(404).json({ message: 'No thought found with this id!' });
         return;
       }
-      res.json(thought); // No explicit return
+      res.json(thought); 
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
   };
 
 // POST to create a new thought
-export const createThought = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { thoughtText, username, userId } = req.body;
+export const createThought = async (req: Request, res: Response) => {
+  try {
+    const { thoughtText, username } = req.body;
 
-        // Create the thought
-        const thought = await Thought.create({ thoughtText, username });
+    const newThought = new Thought({
+      thoughtText,
+      username,
+      createdAt: new Date(),
+    });
 
-        // Associate the thought with the user
-        const user = await User.findByIdAndUpdate(
-            userId,
-            { $push: { thoughts: thought._id } },
-            { new: true }
-        );
+    await newThought.save();
 
-        if (!user) {
-            res.status(404).json({ message: 'No user found with this id!' });
-            return; 
-        }
-
-        res.json(thought); 
-    } catch (error: any) {
-        res.status(500).json({ message: error.message });
-    }
+    res.status(201).json({
+      message: 'Thought created successfully!',
+      thought: newThought,
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 
@@ -63,7 +59,7 @@ export const updateThought = async (req: Request, res: Response): Promise<void> 
         res.status(404).json({ message: 'No thought found with this id!' });
         return;
       }
-      res.json(thought); // No explicit return
+      res.json(thought); 
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }

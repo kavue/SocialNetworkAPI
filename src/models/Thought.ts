@@ -58,7 +58,7 @@ const thoughtSchema = new Schema<Thought>(
       type: Date,
       default: Date.now,
       get: (value: Date) => formatTimestamp(value),
-    } as any, // Workaround for TypeScript error
+    } as any, 
     username: {
       type: String,
       required: true,
