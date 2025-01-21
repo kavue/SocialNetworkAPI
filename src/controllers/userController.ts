@@ -14,21 +14,22 @@ export const getAllUsers = async (_req: Request, res: Response) => {
 }
 
 // GET single user by id
-export const getUserById = async (req: Request, res: Response) => {
+export const getUserById = async (req: Request, res: Response): Promise<void> => {
     try {
         const user = await User.findById(req.params.userId)
             .populate('thoughts')
             .populate('friends');
 
         if (!user) {
-            return res.status(404).json({ message: 'No user found with this id!' });
+            res.status(404).json({ message: 'No user found with this id!' });
+            return; 
         }
-        return res.json(user);
+
+        res.json(user); 
     } catch (error: any) {
-        return res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
-
 
 // POST to create a new user
 export const createUser = async (req: Request, res: Response) => {
@@ -64,23 +65,62 @@ export const updateUser = async (req: Request, res: Response) => {
 };
 
 // DELETE to remove user by id
-export const deleteUser = async (req: Request, res: Response) => {
+export const deleteUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const user = await User.findOneAndDelete({ _id: req.params.userId });
 
         if (!user) {
-            return res.status(404).json({ message: 'No user with this id!' });
+            res.status(404).json({ message: 'No user with this id!' });
+            return; // Stop execution if no user is found
         }
 
-        // Delete all thoughts associated with the user
+        // Remove all thoughts associated with the user
         await Thought.deleteMany({ username: user.username });
 
-        // Return success message
-        return res.json({ message: 'User and associated thoughts deleted!' });
+        // Send a success message
+        res.json({ message: 'User and associated thoughts deleted!' });
     } catch (error: any) {
-        // Return error message
-        return res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
+// POST to add a new friend to a user's friend list
+export const addFriend = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const user = await User.findByIdAndUpdate(
+            req.params.userId,
+            { $addToSet: { friends: req.params.friendId } },
+            { new: true }
+        );
+
+        if (!user) {
+            res.status(404).json({ message: 'No user with this id!' });
+            return;
+        }
+
+        res.json(user);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// DELETE to remove a friend from a user's friend list
+export const removeFriend = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const user = await User.findByIdAndUpdate(
+            req.params.userId,
+            { $pull: { friends: req.params.friendId } },
+            { new: true }
+        );
+
+        if (!user) {
+            res.status(404).json({ message: 'No user with this id!' });
+            return;
+        }
+
+        res.json(user);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
