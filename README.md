@@ -4,7 +4,7 @@
 
 ## Description
 
-This is a **Social Network API** built using **Node.js**, **Express**, **MongoDB**, and **Mongoose**. The API provides endpoints to manage a social network platform where users can create accounts, add friends, post thoughts, and react to thoughts. It also supports functionality to manage user profiles and friendships.
+This is a Social Network API built using **Node.js**, **Express**, **MongoDB**, and **Mongoose**. The API provides endpoints to manage a social network platform where users can create accounts, add friends, post thoughts, and react to thoughts. It also supports functionality to manage user profiles and friendships.
 
 <a href="https://drive.google.com/file/d/1LU4P4Cc5yZoj3vyaUgkek19M2QPA6oJe/view?usp=sharing">Walkthrough Video</a>
 
